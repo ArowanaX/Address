@@ -4,20 +4,18 @@ import "gorm.io/gorm"
 
 type CityRegion struct {
 	gorm.Model
-	ID     uint         `gorm:"primaryKey"`
-	Number int          `gorm:"not null"`
+	Number int          `gorm:"not null;uniqueIndex" validate:"required,min=1"`
 	Parent *uint        `gorm:"default:null"`
-	Name   string       `gorm:"size:255;not null"`
+	Name   string       `gorm:"size:255;not null" validate:"required,min=2,max=255"`
 	Childs []CityRegion `gorm:"foreignKey:Parent"`
 }
 
 type MemberAddress struct {
 	gorm.Model
-	ID            uint       `gorm:"primaryKey"`
-	Member        int        `gorm:"not null"`
-	PhoneNumber   string     `gorm:"size:20;not null"`
+	Member        int        `gorm:"not null" validate:"required,min=1"`
+	PhoneNumber   string     `gorm:"size:20;not null" validate:"required,e164"`
 	IsSelected    bool       `gorm:"default:false"`
-	PostalAddress string     `gorm:"type:text;not null"`
-	RegionID      uint       `gorm:"not null"`
+	PostalAddress string     `gorm:"type:text;not null" validate:"required,min=10"`
+	RegionID      uint       `gorm:"not null" validate:"required,min=1"`
 	Region        CityRegion `gorm:"foreignKey:RegionID"`
 }
